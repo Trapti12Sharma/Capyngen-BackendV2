@@ -15,6 +15,13 @@ const app = express();
 
 // create uploads dir if not exists
 const uploadDir = process.env.UPLOAD_DIR || "./uploads";
+
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+console.log("Swagger UI available at http://localhost:4000/api-docs");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 app.use(helmet());

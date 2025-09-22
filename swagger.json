@@ -1,0 +1,151 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Capyngen Backend API",
+    "description": "API documentation for Capyngen backend (Contact, Blogs, Careers)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/api/contact": {
+      "post": {
+        "summary": "Submit contact form",
+        "tags": ["Contact"],
+        "requestBody": {
+          "description": "Contact form details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "email": { "type": "string", "example": "john@example.com" },
+                  "subject": { "type": "string", "example": "Inquiry" },
+                  "message": { "type": "string", "example": "Hi, I want to know more about your services." }
+                },
+                "required": ["name", "email", "message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "application/json": {
+                "example": { "ok": true, "message": "Sent" }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "example": { "ok": false, "errors": [{ "msg": "Invalid email", "param": "email" }] }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to send email",
+            "content": {
+              "application/json": {
+                "example": { "ok": false, "message": "Failed to send email" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/blogs": {
+      "post": {
+        "summary": "Create a new blog post",
+        "tags": ["Blogs"],
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Admin API key to authenticate blog posting"
+          }
+        ],
+        "requestBody": {
+          "description": "Blog post data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "My First Blog" },
+                  "content": { "type": "string", "example": "This is the blog content." },
+                  "author": { "type": "string", "example": "Admin" }
+                },
+                "required": ["title", "content"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Blog created successfully",
+            "content": {
+              "application/json": {
+                "example": { "ok": true, "message": "Blog created" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/careers": {
+      "post": {
+        "summary": "Submit career application",
+        "tags": ["Careers"],
+        "requestBody": {
+          "description": "Career application details",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "Jane Doe" },
+                  "email": { "type": "string", "example": "jane@example.com" },
+                  "position": { "type": "string", "example": "Frontend Developer" },
+                  "resume": { "type": "string", "format": "binary" }
+                },
+                "required": ["name", "email", "position", "resume"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application submitted",
+            "content": {
+              "application/json": {
+                "example": { "ok": true, "message": "Application received" }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "500": { "description": "Failed to submit application" }
+        }
+      }
+    }
+  },
+  "tags": [
+    { "name": "Contact", "description": "Contact form API" },
+    { "name": "Blogs", "description": "Blog posting API (requires admin API key)" },
+    { "name": "Careers", "description": "Career application API" }
+  ]
+}
