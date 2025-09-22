@@ -7,9 +7,16 @@
   },
   "servers": [
     {
+      "url": "https://capyngen-backendv2.onrender.com",
+      "description": "Render deployed server"
+      
+    },
+     {
       "url": "http://localhost:4000",
       "description": "Local server"
+      
     }
+
   ],
   "paths": {
     "/api/contact": {
