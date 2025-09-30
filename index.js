@@ -30,12 +30,13 @@ app.use(
     origin: (origin, callback) => {
       const allowed = (process.env.CORS_ORIGIN || "")
         .split(",")
-        .map((o) => o.trim());
+        .map((o) => o.trim())
+        .filter((o) => o.length > 0); // ✅ filter empty
 
       if (!origin || allowed.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error(`Not allowed by CORS: ${origin}`));
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
