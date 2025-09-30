@@ -6,9 +6,16 @@
     "version": "1.0.0"
   },
 "servers": [
-  { "url": "http://localhost:4000", "description": "Local server" },
-  { "url": "https://capyngen-backendv2.onrender.com", "description": "Render deployed server" }
+  {
+    "url": "http://localhost:4000",
+    "description": "Local server"
+  },
+  {
+    "url": "https://capyngen-backendv2-1.onrender.com",
+    "description": "Render deployed server"
+  }
 ],
+
 
   "paths": {
     "/api/contact": {
