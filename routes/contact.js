@@ -77,12 +77,12 @@ router.post(
     try {
       await sendMail({
         to: process.env.COMPANY_EMAIL,
-        subject: `[Contact] ${subject} — ${name}`,
-        html,
-        text,
-        // set replyTo so when you click "Reply" in your inbox, reply goes to the person who filled the form
+        subject: `[Contact] ${subject || "New Inquiry"} — ${name}`,
         replyTo: email,
+        text: `${name} (${email}) says: ${message}`,
+        html: `<p><b>From:</b> ${name} (${email})</p><p>${message}</p>`,
       });
+
       return res.json({ ok: true, message: "Sent" });
     } catch (err) {
       console.error("Contact email error:", err);
