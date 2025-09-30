@@ -34,7 +34,7 @@ router.post(
     const sentAt = new Date().toLocaleString();
     const html = `
       <div style="font-family: Arial, Helvetica, sans-serif; color:#222; line-height:1.5;">
-        <h2 style="margin-bottom:6px;color:#0b66c3">New contact form submission</h2>
+        <h2 style="margin-bottom:6px;color:#0b66c3">📩 New Contact Form Submission</h2>
         <table style="border-collapse:collapse;">
           <tr>
             <td style="padding:4px 8px; vertical-align:top;"><strong>Name:</strong></td>
@@ -77,10 +77,10 @@ router.post(
     try {
       await sendMail({
         to: process.env.COMPANY_EMAIL,
-        subject: `[Contact] ${subject || "New Inquiry"} — ${name}`,
+        subject: `[Contact] ${subject} — ${name}`,
         replyTo: email,
-        text: `${name} (${email}) says: ${message}`,
-        html: `<p><b>From:</b> ${name} (${email})</p><p>${message}</p>`,
+        text, // ✅ use the prepared plain text
+        html, // ✅ use the prepared HTML
       });
 
       return res.json({ ok: true, message: "Sent" });
