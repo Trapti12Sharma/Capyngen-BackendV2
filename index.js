@@ -27,17 +27,22 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 app.use(helmet());
 app.use(
   cors({
-    origin: [
-      "http://localhost:4000", // ✅ allow Swagger UI locally
-      "https://capyngen.com", // ✅ production frontend
-      "https://capyngen-backendv2.onrender.com", // ✅ deployed backend
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ include OPTIONS
+    origin: (origin, callback) => {
+      const allowed = (process.env.CORS_ORIGIN || "")
+        .split(",")
+        .map((o) => o.trim());
+
+      if (!origin || allowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
   })
 );
 
-// Handle preflight
 app.options("*", cors());
 
 app.use(express.json({ limit: "5mb" }));
