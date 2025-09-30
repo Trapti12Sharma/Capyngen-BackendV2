@@ -13,13 +13,6 @@ const careerRouter = require("./routes/career");
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ["https://capyngen.com", "https://capyngen-backendv2.onrender.com"],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
-  })
-);
 // create uploads dir if not exists
 const uploadDir = process.env.UPLOAD_DIR || "./uploads";
 
@@ -34,7 +27,9 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
+    origin: ["https://capyngen.com", "https://capyngen-backendv2.onrender.com"],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
   })
 );
 app.use(express.json({ limit: "5mb" }));
