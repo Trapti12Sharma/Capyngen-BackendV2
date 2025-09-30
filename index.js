@@ -13,6 +13,13 @@ const careerRouter = require("./routes/career");
 
 const app = express();
 
+app.use(
+  cors({
+    origin: ["https://capyngen.com", "https://capyngen-backendv2.onrender.com"],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
+  })
+);
 // create uploads dir if not exists
 const uploadDir = process.env.UPLOAD_DIR || "./uploads";
 
