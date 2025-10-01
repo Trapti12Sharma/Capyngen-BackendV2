@@ -5,18 +5,16 @@
     "description": "API documentation for Capyngen backend (Contact, Blogs, Careers)",
     "version": "1.0.0"
   },
-"servers": [
-  {
-    "url": "http://localhost:4000",
-    "description": "Local server"
-  },
-  {
-    "url": "https://capyngen-backendv2-1.onrender.com",
-    "description": "Render deployed server"
-  }
-],
-
-
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local server"
+    },
+    {
+      "url": "https://capyngen-backendv2-1.onrender.com",
+      "description": "Render deployed server"
+    }
+  ],
   "paths": {
     "/api/contact": {
       "post": {
@@ -72,15 +70,6 @@
       "post": {
         "summary": "Create a new blog post",
         "tags": ["Blogs"],
-        "parameters": [
-          {
-            "name": "x-api-key",
-            "in": "header",
-            "required": true,
-            "schema": { "type": "string" },
-            "description": "Admin API key to authenticate blog posting"
-          }
-        ],
         "requestBody": {
           "description": "Blog post data",
           "required": true,
@@ -90,25 +79,76 @@
                 "type": "object",
                 "properties": {
                   "title": { "type": "string", "example": "My First Blog" },
-                  "content": { "type": "string", "example": "This is the blog content." },
-                  "author": { "type": "string", "example": "Admin" }
+                  "author": { "type": "string", "example": "Admin" },
+                  "description": { "type": "string", "example": "A short description of the blog" },
+                  "content": { "type": "string", "example": "This is the full blog content." },
+                  "image": { "type": "string", "example": "https://example.com/blog.jpg" },
+                  "tags": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "example": ["React", "Node.js", "MongoDB"]
+                  }
                 },
-                "required": ["title", "content"]
+                "required": ["title", "author", "description", "content"]
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "Blog created successfully",
+          "200": {
+            "description": "Blog saved successfully",
             "content": {
               "application/json": {
-                "example": { "ok": true, "message": "Blog created" }
+                "example": {
+                  "ok": true,
+                  "message": "Blog saved successfully",
+                  "blog": {
+                    "_id": "65123abcd456ef7890ghijk",
+                    "title": "My First Blog",
+                    "author": "Admin",
+                    "description": "A short description of the blog",
+                    "content": "This is the full blog content.",
+                    "image": "https://example.com/blog.jpg",
+                    "tags": ["React", "Node.js", "MongoDB"],
+                    "createdAt": "2025-09-30T18:30:00.000Z",
+                    "updatedAt": "2025-09-30T18:30:00.000Z"
+                  }
+                }
               }
             }
           },
-          "401": { "description": "Unauthorized" },
-          "500": { "description": "Internal server error" }
+          "400": { "description": "Validation error" },
+          "500": { "description": "Failed to save blog" }
+        }
+      },
+      "get": {
+        "summary": "Get all blog posts",
+        "tags": ["Blogs"],
+        "responses": {
+          "200": {
+            "description": "List of blogs",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "blogs": [
+                    {
+                      "_id": "65123abcd456ef7890ghijk",
+                      "title": "My First Blog",
+                      "author": "Admin",
+                      "description": "A short description of the blog",
+                      "content": "This is the full blog content.",
+                      "image": "https://example.com/blog.jpg",
+                      "tags": ["React", "Node.js", "MongoDB"],
+                      "createdAt": "2025-09-30T18:30:00.000Z",
+                      "updatedAt": "2025-09-30T18:30:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": { "description": "Failed to fetch blogs" }
         }
       }
     },
@@ -151,7 +191,7 @@
   },
   "tags": [
     { "name": "Contact", "description": "Contact form API" },
-    { "name": "Blogs", "description": "Blog posting API (requires admin API key)" },
+    { "name": "Blogs", "description": "Blog posting and retrieval API" },
     { "name": "Careers", "description": "Career application API" }
   ]
 }

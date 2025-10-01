@@ -6,12 +6,17 @@ const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const fs = require("fs");
+const connectDB = require("./config/db");
 
 const contactRouter = require("./routes/contact");
 const blogRouter = require("./routes/blog");
 const careerRouter = require("./routes/career");
 
 const app = express();
+
+connectDB();
+
+// Middleware
 
 // create uploads dir if not exists
 const uploadDir = process.env.UPLOAD_DIR || "./uploads";
@@ -72,7 +77,7 @@ app.use(limiter);
 
 // Routes
 app.use("/api/contact", contactRouter);
-app.use("/api/blogs", blogRouter);
+app.use("/api/blogs", require("./routes/blog"));
 app.use("/api/careers", careerRouter);
 
 app.get("/", (req, res) => res.send("Capyngen backend is up"));
