@@ -152,6 +152,98 @@
         }
       }
     },
+    "/api/blogs/{id}": {
+  "put": {
+    "summary": "Update a blog post",
+    "tags": ["Blogs"],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" },
+        "description": "Blog ID"
+      }
+    ],
+    "requestBody": {
+      "description": "Fields to update in the blog",
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string", "example": "Updated Blog Title" },
+              "author": { "type": "string", "example": "Admin" },
+              "description": { "type": "string", "example": "Updated description" },
+              "content": { "type": "string", "example": "Updated full content" },
+              "image": { "type": "string", "example": "https://example.com/new-image.jpg" },
+              "tags": {
+                "type": "array",
+                "items": { "type": "string" },
+                "example": ["Updated", "React"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Blog updated successfully",
+        "content": {
+          "application/json": {
+            "example": {
+              "ok": true,
+              "message": "Blog updated successfully",
+              "blog": {
+                "_id": "65123abcd456ef7890ghijk",
+                "title": "Updated Blog Title",
+                "author": "Admin",
+                "description": "Updated description",
+                "content": "Updated full content",
+                "image": "https://example.com/new-image.jpg",
+                "tags": ["Updated", "React"],
+                "createdAt": "2025-09-30T18:30:00.000Z",
+                "updatedAt": "2025-10-01T12:00:00.000Z"
+              }
+            }
+          }
+        }
+      },
+      "404": { "description": "Blog not found" },
+      "500": { "description": "Failed to update blog" }
+    }
+  },
+  "delete": {
+    "summary": "Delete a blog post",
+    "tags": ["Blogs"],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" },
+        "description": "Blog ID"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Blog deleted successfully",
+        "content": {
+          "application/json": {
+            "example": {
+              "ok": true,
+              "message": "Blog deleted successfully"
+            }
+          }
+        }
+      },
+      "404": { "description": "Blog not found" },
+      "500": { "description": "Failed to delete blog" }
+    }
+  }
+},
     "/api/careers": {
       "post": {
         "summary": "Submit career application",
@@ -195,3 +287,5 @@
     { "name": "Careers", "description": "Career application API" }
   ]
 }
+
+
