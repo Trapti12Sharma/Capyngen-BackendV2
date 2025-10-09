@@ -39,30 +39,9 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Email sent successfully",
-            "content": {
-              "application/json": {
-                "example": { "ok": true, "message": "Sent" }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "example": { "ok": false, "errors": [{ "msg": "Invalid email", "param": "email" }] }
-              }
-            }
-          },
-          "500": {
-            "description": "Failed to send email",
-            "content": {
-              "application/json": {
-                "example": { "ok": false, "message": "Failed to send email" }
-              }
-            }
-          }
+          "200": { "description": "Email sent successfully" },
+          "400": { "description": "Validation error" },
+          "500": { "description": "Failed to send email" }
         }
       }
     },
@@ -95,28 +74,7 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Blog saved successfully",
-            "content": {
-              "application/json": {
-                "example": {
-                  "ok": true,
-                  "message": "Blog saved successfully",
-                  "blog": {
-                    "_id": "65123abcd456ef7890ghijk",
-                    "title": "My First Blog",
-                    "author": "Admin",
-                    "description": "A short description of the blog",
-                    "content": "This is the full blog content.",
-                    "image": "https://example.com/blog.jpg",
-                    "tags": ["React", "Node.js", "MongoDB"],
-                    "createdAt": "2025-09-30T18:30:00.000Z",
-                    "updatedAt": "2025-09-30T18:30:00.000Z"
-                  }
-                }
-              }
-            }
-          },
+          "200": { "description": "Blog saved successfully" },
           "400": { "description": "Validation error" },
           "500": { "description": "Failed to save blog" }
         }
@@ -125,158 +83,167 @@
         "summary": "Get all blog posts",
         "tags": ["Blogs"],
         "responses": {
-          "200": {
-            "description": "List of blogs",
-            "content": {
-              "application/json": {
-                "example": {
-                  "ok": true,
-                  "blogs": [
-                    {
-                      "_id": "65123abcd456ef7890ghijk",
-                      "title": "My First Blog",
-                      "author": "Admin",
-                      "description": "A short description of the blog",
-                      "content": "This is the full blog content.",
-                      "image": "https://example.com/blog.jpg",
-                      "tags": ["React", "Node.js", "MongoDB"],
-                      "createdAt": "2025-09-30T18:30:00.000Z",
-                      "updatedAt": "2025-09-30T18:30:00.000Z"
-                    }
-                  ]
-                }
-              }
-            }
-          },
+          "200": { "description": "List of blogs" },
           "500": { "description": "Failed to fetch blogs" }
         }
       }
     },
     "/api/blogs/{id}": {
-  "put": {
-    "summary": "Update a blog post",
-    "tags": ["Blogs"],
-    "parameters": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": { "type": "string" },
-        "description": "Blog ID"
-      }
-    ],
-    "requestBody": {
-      "description": "Fields to update in the blog",
-      "required": true,
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "title": { "type": "string", "example": "Updated Blog Title" },
-              "author": { "type": "string", "example": "Admin" },
-              "description": { "type": "string", "example": "Updated description" },
-              "content": { "type": "string", "example": "Updated full content" },
-              "image": { "type": "string", "example": "https://example.com/new-image.jpg" },
-              "tags": {
-                "type": "array",
-                "items": { "type": "string" },
-                "example": ["Updated", "React"]
-              }
-            }
+      "put": {
+        "summary": "Update a blog post",
+        "tags": ["Blogs"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Blog ID"
           }
-        }
-      }
-    },
-    "responses": {
-      "200": {
-        "description": "Blog updated successfully",
-        "content": {
-          "application/json": {
-            "example": {
-              "ok": true,
-              "message": "Blog updated successfully",
-              "blog": {
-                "_id": "65123abcd456ef7890ghijk",
-                "title": "Updated Blog Title",
-                "author": "Admin",
-                "description": "Updated description",
-                "content": "Updated full content",
-                "image": "https://example.com/new-image.jpg",
-                "tags": ["Updated", "React"],
-                "createdAt": "2025-09-30T18:30:00.000Z",
-                "updatedAt": "2025-10-01T12:00:00.000Z"
-              }
-            }
-          }
-        }
-      },
-      "404": { "description": "Blog not found" },
-      "500": { "description": "Failed to update blog" }
-    }
-  },
-  "delete": {
-    "summary": "Delete a blog post",
-    "tags": ["Blogs"],
-    "parameters": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": { "type": "string" },
-        "description": "Blog ID"
-      }
-    ],
-    "responses": {
-      "200": {
-        "description": "Blog deleted successfully",
-        "content": {
-          "application/json": {
-            "example": {
-              "ok": true,
-              "message": "Blog deleted successfully"
-            }
-          }
-        }
-      },
-      "404": { "description": "Blog not found" },
-      "500": { "description": "Failed to delete blog" }
-    }
-  }
-},
-    "/api/careers": {
-      "post": {
-        "summary": "Submit career application",
-        "tags": ["Careers"],
+        ],
         "requestBody": {
-          "description": "Career application details",
+          "description": "Fields to update in the blog",
           "required": true,
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "example": "Jane Doe" },
-                  "email": { "type": "string", "example": "jane@example.com" },
-                  "position": { "type": "string", "example": "Frontend Developer" },
-                  "resume": { "type": "string", "format": "binary" }
-                },
-                "required": ["name", "email", "position", "resume"]
+                  "title": { "type": "string", "example": "Updated Blog Title" },
+                  "author": { "type": "string", "example": "Admin" },
+                  "description": { "type": "string", "example": "Updated description" },
+                  "content": { "type": "string", "example": "Updated full content" },
+                  "image": { "type": "string", "example": "https://example.com/new-image.jpg" },
+                  "tags": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "example": ["Updated", "React"]
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Application submitted",
-            "content": {
-              "application/json": {
-                "example": { "ok": true, "message": "Application received" }
+          "200": { "description": "Blog updated successfully" },
+          "404": { "description": "Blog not found" },
+          "500": { "description": "Failed to update blog" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a blog post",
+        "tags": ["Blogs"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Blog ID"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Blog deleted successfully" },
+          "404": { "description": "Blog not found" },
+          "500": { "description": "Failed to delete blog" }
+        }
+      }
+    },
+    "/api/careers": {
+      "post": {
+        "summary": "Create a new career opening",
+        "tags": ["Careers"],
+        "requestBody": {
+          "description": "Career opening details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "Frontend Developer" },
+                  "department": { "type": "string", "example": "Engineering" },
+                  "location": { "type": "string", "example": "Remote" },
+                  "jobType": { "type": "string", "example": "Full-time" },
+                  "description": { "type": "string", "example": "Develop modern web applications" },
+                  "requirements": { "type": "string", "example": "2+ years experience in React.js" },
+                  "applyLink": { "type": "string", "example": "https://apply.example.com" }
+                },
+                "required": ["title", "department", "location", "jobType", "description"]
               }
             }
-          },
+          }
+        },
+        "responses": {
+          "200": { "description": "Career created successfully" },
           "400": { "description": "Validation error" },
-          "500": { "description": "Failed to submit application" }
+          "500": { "description": "Failed to create career" }
+        }
+      },
+      "get": {
+        "summary": "Get all career openings",
+        "tags": ["Careers"],
+        "responses": {
+          "200": { "description": "List of careers" },
+          "500": { "description": "Failed to fetch careers" }
+        }
+      }
+    },
+    "/api/careers/{id}": {
+      "put": {
+        "summary": "Update a career opening",
+        "tags": ["Careers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Career ID"
+          }
+        ],
+        "requestBody": {
+          "description": "Fields to update in the career opening",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "Updated Job Title" },
+                  "department": { "type": "string", "example": "Updated Department" },
+                  "location": { "type": "string", "example": "Updated Location" },
+                  "jobType": { "type": "string", "example": "Contract" },
+                  "description": { "type": "string", "example": "Updated job description" },
+                  "requirements": { "type": "string", "example": "Updated requirements" },
+                  "applyLink": { "type": "string", "example": "https://apply.example.com/new" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Career updated successfully" },
+          "404": { "description": "Career not found" },
+          "500": { "description": "Failed to update career" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a career opening",
+        "tags": ["Careers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Career ID"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Career deleted successfully" },
+          "404": { "description": "Career not found" },
+          "500": { "description": "Failed to delete career" }
         }
       }
     }
@@ -284,8 +251,6 @@
   "tags": [
     { "name": "Contact", "description": "Contact form API" },
     { "name": "Blogs", "description": "Blog posting and retrieval API" },
-    { "name": "Careers", "description": "Career application API" }
+    { "name": "Careers", "description": "Career openings management (create, list, update, delete)" }
   ]
 }
-
-
