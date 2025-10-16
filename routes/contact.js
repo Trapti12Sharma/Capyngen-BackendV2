@@ -1,11 +1,10 @@
-// routes/contact.js
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const { sendMail } = require("../utils/mailer");
 
 const router = express.Router();
 
-// small helper to escape HTML so user input doesn't break the email layout
+// Helper to escape HTML so user input doesn't break layout
 function escapeHtml(str = "") {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -18,9 +17,11 @@ function escapeHtml(str = "") {
 router.post(
   "/",
   [
-    body("name").trim().notEmpty(),
+    body("firstName").trim().notEmpty(),
+    body("lastName").trim().notEmpty(),
     body("email").isEmail(),
     body("message").trim().notEmpty(),
+    body("phoneNumber").optional().trim(),
     body("subject").optional().trim(),
   ],
   async (req, res) => {
@@ -28,22 +29,43 @@ router.post(
     if (!errors.isEmpty())
       return res.status(400).json({ ok: false, errors: errors.array() });
 
-    const { name, email, subject = "Contact via website", message } = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      subject = "Contact via website",
+      message,
+    } = req.body;
 
-    // build formal HTML and plain-text email
+    const name = `${firstName} ${lastName}`.trim();
+
+    // Build email HTML and text
     const sentAt = new Date().toLocaleString();
     const html = `
       <div style="font-family: Arial, Helvetica, sans-serif; color:#222; line-height:1.5;">
         <h2 style="margin-bottom:6px;color:#0b66c3">📩 New Contact Form Submission</h2>
         <table style="border-collapse:collapse;">
           <tr>
-            <td style="padding:4px 8px; vertical-align:top;"><strong>Name:</strong></td>
-            <td style="padding:4px 8px;">${escapeHtml(name)}</td>
+            <td style="padding:4px 8px; vertical-align:top;"><strong>First Name:</strong></td>
+            <td style="padding:4px 8px;">${escapeHtml(firstName)}</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 8px; vertical-align:top;"><strong>Last Name:</strong></td>
+            <td style="padding:4px 8px;">${escapeHtml(lastName)}</td>
           </tr>
           <tr>
             <td style="padding:4px 8px; vertical-align:top;"><strong>Email:</strong></td>
             <td style="padding:4px 8px;">${escapeHtml(email)}</td>
           </tr>
+          ${
+            phoneNumber
+              ? `<tr>
+                  <td style="padding:4px 8px; vertical-align:top;"><strong>Phone Number:</strong></td>
+                  <td style="padding:4px 8px;">${escapeHtml(phoneNumber)}</td>
+                </tr>`
+              : ""
+          }
           <tr>
             <td style="padding:4px 8px; vertical-align:top;"><strong>Subject:</strong></td>
             <td style="padding:4px 8px;">${escapeHtml(subject)}</td>
@@ -65,8 +87,10 @@ router.post(
 
     const text = [
       "New contact form submission",
-      `Name: ${name}`,
+      `First Name: ${firstName}`,
+      `Last Name: ${lastName}`,
       `Email: ${email}`,
+      phoneNumber ? `Phone: ${phoneNumber}` : "",
       `Subject: ${subject}`,
       "Message:",
       message,
@@ -79,8 +103,8 @@ router.post(
         to: process.env.COMPANY_EMAIL,
         subject: `[Contact] ${subject} — ${name}`,
         replyTo: email,
-        text, // ✅ use the prepared plain text
-        html, // ✅ use the prepared HTML
+        text,
+        html,
       });
 
       return res.json({ ok: true, message: "Sent" });
