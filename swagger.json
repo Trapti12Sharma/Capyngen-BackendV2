@@ -10,48 +10,51 @@
       "url": "http://localhost:4000",
       "description": "Local server"
     },
-    
     {
       "url": "https://capyngen-backendv2-1.onrender.com",
       "description": "Render deployed server"
     }
   ],
   "paths": {
-   "/api/contact": {
-  "post": {
-    "summary": "Submit contact form",
-    "tags": ["Contact"],
-    "requestBody": {
-      "description": "Contact form details",
-      "required": true,
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "firstName": { "type": "string", "example": "John" },
-              "lastName": { "type": "string", "example": "Doe" },
-              "email": { "type": "string", "example": "john.doe@example.com" },
-              "phoneNumber": { "type": "string", "example": "+1 (555) 555-5555" },
-              "subject": { "type": "string", "example": "Inquiry" },
-              "message": {
-                "type": "string",
-                "example": "Hi, I want to know more about your services."
+    "/api/contact": {
+      "post": {
+        "summary": "Submit contact form",
+        "tags": ["Contact"],
+        "requestBody": {
+          "description": "Contact form details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": { "type": "string", "example": "John" },
+                  "lastName": { "type": "string", "example": "Doe" },
+                  "email": { "type": "string", "example": "john.doe@example.com" },
+                  "phoneNumber": { "type": "string", "example": "+1 (555) 555-5555" },
+                  "topic": {
+                    "type": "string",
+                    "example": "General Inquiry",
+                    "description": "Selected topic from dropdown (e.g. Support, Sales, Feedback)"
+                  },
+                  "subject": { "type": "string", "example": "Inquiry" },
+                  "message": {
+                    "type": "string",
+                    "example": "Hi, I want to know more about your services."
+                  }
+                },
+                "required": ["firstName", "lastName", "email", "message"]
               }
-            },
-            "required": ["firstName", "lastName", "email", "message"]
+            }
           }
+        },
+        "responses": {
+          "200": { "description": "Email sent successfully" },
+          "400": { "description": "Validation error" },
+          "500": { "description": "Failed to send email" }
         }
       }
     },
-    "responses": {
-      "200": { "description": "Email sent successfully" },
-      "400": { "description": "Validation error" },
-      "500": { "description": "Failed to send email" }
-    }
-  }
-}
-,
     "/api/blogs": {
       "post": {
         "summary": "Create a new blog post",
