@@ -34,16 +34,15 @@
                   "phoneNumber": { "type": "string", "example": "+1 (555) 555-5555" },
                   "topic": {
                     "type": "string",
-                    "example": "General Inquiry",
-                    "description": "Selected topic from dropdown (e.g. Support, Sales, Feedback)"
+                    "example": "Web Development",
+                    "description": "Selected topic from dropdown (e.g. Web Development, App Development, AI Solutions, E-Commerce, Blockchain)"
                   },
-                  "subject": { "type": "string", "example": "Inquiry" },
                   "message": {
                     "type": "string",
                     "example": "Hi, I want to know more about your services."
                   }
                 },
-                "required": ["firstName", "lastName", "email", "message"]
+                "required": ["firstName", "lastName", "email", "message", "topic"]
               }
             }
           }

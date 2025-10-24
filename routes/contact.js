@@ -4,7 +4,7 @@ const { sendMail } = require("../utils/mailer");
 
 const router = express.Router();
 
-// Helper to escape HTML so user input doesn't break layout
+// Helper to escape HTML safely
 function escapeHtml(str = "") {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -22,26 +22,19 @@ router.post(
     body("email").isEmail(),
     body("message").trim().notEmpty(),
     body("phoneNumber").optional().trim(),
-    body("subject").optional().trim(),
+    body("topic").trim().notEmpty(), // ✅ topic (dropdown) is required
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
       return res.status(400).json({ ok: false, errors: errors.array() });
 
-    const {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      subject = "Contact via website",
-      message,
-    } = req.body;
-
+    const { firstName, lastName, email, phoneNumber, message, topic } =
+      req.body;
     const name = `${firstName} ${lastName}`.trim();
-
-    // Build email HTML and text
     const sentAt = new Date().toLocaleString();
+
+    // ✅ Updated email template (no subject line, includes topic)
     const html = `
       <div style="font-family: Arial, Helvetica, sans-serif; color:#222; line-height:1.5;">
         <h2 style="margin-bottom:6px;color:#0b66c3">📩 New Contact Form Submission</h2>
@@ -67,8 +60,8 @@ router.post(
               : ""
           }
           <tr>
-            <td style="padding:4px 8px; vertical-align:top;"><strong>Subject:</strong></td>
-            <td style="padding:4px 8px;">${escapeHtml(subject)}</td>
+            <td style="padding:4px 8px; vertical-align:top;"><strong>Topic:</strong></td>
+            <td style="padding:4px 8px;">${escapeHtml(topic)}</td>
           </tr>
           <tr>
             <td style="padding:4px 8px; vertical-align:top;"><strong>Message:</strong></td>
@@ -85,13 +78,14 @@ router.post(
       </div>
     `;
 
+    // ✅ Text version (no subject)
     const text = [
       "New contact form submission",
       `First Name: ${firstName}`,
       `Last Name: ${lastName}`,
       `Email: ${email}`,
       phoneNumber ? `Phone: ${phoneNumber}` : "",
-      `Subject: ${subject}`,
+      `Topic: ${topic}`,
       "Message:",
       message,
       "",
@@ -101,7 +95,7 @@ router.post(
     try {
       await sendMail({
         to: process.env.COMPANY_EMAIL,
-        subject: `[Contact] ${subject} — ${name}`,
+        subject: `[Contact] ${topic} — ${name}`, // ✅ Uses topic as subject line for internal clarity
         replyTo: email,
         text,
         html,
