@@ -6,36 +6,37 @@ const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const fs = require("fs");
+const path = require("path");
 const connectDB = require("./config/db");
 
 const contactRouter = require("./routes/contact");
 const blogRouter = require("./routes/blog");
 const careerRouter = require("./routes/career");
+const uploadRouter = require("./routes/upload");
 
 const app = express();
 
+// ✅ Connect MongoDB
 connectDB();
 
-// Middleware
-
-// create uploads dir if not exists
-const uploadDir = process.env.UPLOAD_DIR || "./uploads";
+// ✅ Create uploads dir if not exists
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
-// Swagger docs
+// ✅ Swagger docs
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 console.log("Swagger UI available at http://localhost:4000/api-docs");
 
-// Security
+// ✅ Security
 app.use(helmet());
 
-// CORS setup
+// ✅ CORS setup
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowed = (process.env.CORS_ORIGIN || "")
+      const allowed = (process.env.CORS_ORIGIN || "http://localhost:5173")
         .split(",")
         .map((o) => o.trim())
         .filter((o) => o.length > 0);
@@ -58,30 +59,45 @@ app.use(
   })
 );
 
-// Body parsers
+// ✅ Body parsers
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Logger
+// ✅ Logger
 app.use(morgan("dev"));
 
-// Trust proxy for Render/Heroku etc. (important for rate limiting)
+// ✅ Trust proxy for Render/Heroku etc.
 app.set("trust proxy", 1);
 
-// Rate limiting
+// ✅ Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 mins
   max: 100, // max requests per window
 });
 app.use(limiter);
 
-// Routes
+// ✅ Serve uploaded images publicly with CORS headers
+// const path = require("path");
+
+// ✅ Serve uploaded images (fixes path issues)
+app.use(
+  "/uploads",
+  (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    next();
+  },
+  express.static(path.join(__dirname, "uploads"))
+);
+
+// ✅ Routes
+app.use("/api/upload", uploadRouter);
 app.use("/api/contact", contactRouter);
-app.use("/api/blogs", require("./routes/blog"));
+app.use("/api/blogs", blogRouter);
 app.use("/api/careers", careerRouter);
 
+// ✅ Root route
 app.get("/", (req, res) => res.send("Capyngen backend is up"));
 
-// Start server
+// ✅ Start server
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`🚀 Server listening on ${port}`));
+app.listen(port, () => console.log(`🚀 Server listening on port ${port}`));
